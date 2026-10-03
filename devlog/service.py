@@ -47,3 +47,34 @@ class DevLogService:
         self.storage.save(filtered_entries)
 
         return True
+
+    def search_entries(
+        self,
+        query: str | None = None,
+        tag: str | None = None,
+    ):
+        entries = self.storage.load()
+
+        if query:
+            normalized_query = query.lower()
+
+            entries = [
+                entry
+                for entry in entries
+                if normalized_query
+                in entry.message.lower()
+            ]
+
+        if tag:
+            normalized_tag = tag.lower()
+
+            entries = [
+                entry
+                for entry in entries
+                if any(
+                    item.lower() == normalized_tag
+                    for item in entry.tags
+                )
+            ]
+
+        return entries
