@@ -62,6 +62,22 @@ def main():
         help="ID of the note.",
     )
 
+    search_parser = subparsers.add_parser(
+        "search",
+        help="Search development notes.",
+    )
+
+    search_parser.add_argument(
+        "query",
+        nargs="?",
+        help="Text to search for.",
+    )
+
+    search_parser.add_argument(
+        "--tag",
+        help="Filter entries by tag.",
+    )
+
     args = parser.parse_args()
 
     service = DevLogService(
@@ -95,6 +111,18 @@ def main():
         else:
             print(f"Entry not found: {args.id}")
 
+    elif args.command == "search":
+        entries = service.search_entries(
+            query=args.query,
+            tag=args.tag,
+        )
 
+        if not entries:
+            print("No matching entries found.")
+            return
+
+        for entry in entries:
+            print_entry(entry)
+            
 if __name__ == "__main__":
     main()

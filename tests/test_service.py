@@ -66,6 +66,67 @@ class DevLogServiceTest(unittest.TestCase):
 
         self.assertFalse(result)
 
+    def test_search_by_message(self):
+        self.service.add_entry(
+            "Implement authentication middleware",
+            ["backend"],
+        )
+
+        self.service.add_entry(
+            "Update project documentation",
+            ["docs"],
+        )
+
+        results = self.service.search_entries(
+            query="authentication"
+        )
+
+        self.assertEqual(len(results), 1)
+
+        self.assertEqual(
+            results[0].message,
+            "Implement authentication middleware",
+        )
+
+    def test_filter_by_tag(self):
+        self.service.add_entry(
+            "Fix login redirect",
+            ["bug", "backend"],
+        )
+
+        self.service.add_entry(
+            "Update README",
+            ["docs"],
+        )
+
+        results = self.service.search_entries(
+            tag="backend"
+        )
+
+        self.assertEqual(len(results), 1)
+
+    def test_search_with_query_and_tag(self):
+        self.service.add_entry(
+            "Improve API error handling",
+            ["backend", "api"],
+        )
+
+        self.service.add_entry(
+            "Improve README examples",
+            ["docs"],
+        )
+
+        results = self.service.search_entries(
+            query="improve",
+            tag="api",
+        )
+
+        self.assertEqual(len(results), 1)
+
+        self.assertEqual(
+            results[0].message,
+            "Improve API error handling",
+        )
 
 if __name__ == "__main__":
     unittest.main()
